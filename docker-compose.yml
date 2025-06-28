@@ -1,0 +1,17 @@
+services:
+  pg:
+    image: postgres
+    container_name: nest_prisma_db
+    restart: always 
+    environment:
+      - POSTGRES_PASSWORD=Codaw.1234
+      - POSTGRES_DB=nest_ia_db_dev
+      - POSTGRES_USER=postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - nest_prisma_db_data:/var/lib/postgresql/data
+
+volumes:
+  nest_prisma_db_data:
+    driver: local
