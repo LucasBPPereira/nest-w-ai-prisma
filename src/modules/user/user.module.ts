@@ -9,6 +9,11 @@ import { CreateUserUseCase } from './app/useCases/createUser.usecase';
 import { FindUserByEmailService } from './app/services/find-user-by-email.service';
 import { GetAllUsersService } from './app/services/get-all-users.service';
 import { GetAllUsersUseCase } from './app/useCases/get-all-users.usecase';
+import { UpdateUserService } from './app/services/update-user.service';
+import { UpdateUserUseCase } from './app/useCases/update-user.usecase';
+import { FindUserByIDService } from './app/services/find-user-by-id.service';
+import { DeleteUserService } from './app/services/delete-user.service';
+import { DeleteUserUseCase } from './app/useCases/delete-user.usecase';
 
 const createUserService: Provider = {
   provide: TYPES.services.CreateUserService,
@@ -18,9 +23,14 @@ const createUserUseCase: Provider = {
   provide: TYPES.useCases.CreateUserUseCase,
   useClass: CreateUserUseCase,
 };
+
 const findUserByEmailService: Provider = {
   provide: TYPES.services.FindUserByEmailService,
   useClass: FindUserByEmailService,
+};
+const findUserByIDService: Provider = {
+  provide: TYPES.services.FindUserByIDService,
+  useClass: FindUserByIDService,
 };
 const getAllUsersService: Provider = {
   provide: TYPES.services.GetAllUsersService,
@@ -31,6 +41,24 @@ const getAllUsersUseCase: Provider = {
   useClass: GetAllUsersUseCase,
 };
 
+const updateUserService: Provider = {
+  provide: TYPES.services.UpdateUserService,
+  useClass: UpdateUserService,
+};
+const updateUserUseCase: Provider = {
+  provide: TYPES.useCases.UpdateUserUseCase,
+  useClass: UpdateUserUseCase,
+};
+
+const deleteUserService: Provider = {
+  provide: TYPES.services.DeleteUserService,
+  useClass: DeleteUserService,
+};
+const deleteUserUseCase: Provider = {
+  provide: TYPES.useCases.DeleteUserUseCase,
+  useClass: DeleteUserUseCase,
+};
+
 @Module({
   imports: [DatabaseModule, AiModule],
   providers: [
@@ -38,8 +66,13 @@ const getAllUsersUseCase: Provider = {
     createUserService,
     createUserUseCase,
     findUserByEmailService,
+    findUserByIDService,
     getAllUsersService,
     getAllUsersUseCase,
+    updateUserService,
+    updateUserUseCase,
+    deleteUserService,
+    deleteUserUseCase,
   ],
   controllers: [UserController],
 })
