@@ -1,5 +1,7 @@
 import { User } from '../../domain/entity/user.entity';
+import { CreateUserDTO } from '../../dto/create-user.dto';
+import { ResponseController } from '../response-controller';
 
 export interface ICreateUserUseCase {
-  createUser(data: User): Promise<User>;
+  handle(data: CreateUserDTO): Promise<ResponseController<User>>;
 }

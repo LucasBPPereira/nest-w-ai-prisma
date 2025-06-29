@@ -1,5 +1,6 @@
 import { User } from '../../domain/entity/user.entity';
+import { ResponseController } from '../response-controller';
 
 export interface IGetAllUsersUseCase {
-  getAllUsers(): Promise<User[] | []>;
+  handle(): Promise<ResponseController<User[] | []>>;
 }
