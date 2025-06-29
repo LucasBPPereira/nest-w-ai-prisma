@@ -6,7 +6,7 @@ import { PrismaService } from 'src/config/database/prisma/prisma.service';
 @Injectable()
 export class GetAllUsersService implements IGetAllUsersService {
   constructor(private prisma: PrismaService) {}
-  async getAllUsers(): Promise<User[] | []> {
+  async execute(): Promise<User[] | []> {
     const users = await this.prisma.user.findMany();
     if (!users) {
       return [];

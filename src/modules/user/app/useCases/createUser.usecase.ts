@@ -5,6 +5,7 @@ import { TYPES } from '../../interfaces/types';
 import { CreateUserService } from '../services/create-user.service';
 import { CreateUserDTO } from '../../dto/create-user.dto';
 import { FindUserByEmailService } from '../services/find-user-by-email.service';
+import { ResponseController } from '../../interfaces/response-controller';
 
 @Injectable()
 export class CreateUserUseCase implements ICreateUserUseCase {
@@ -14,11 +15,15 @@ export class CreateUserUseCase implements ICreateUserUseCase {
     @Inject(TYPES.services.FindUserByEmailService)
     private findUserService: FindUserByEmailService,
   ) {}
-  async createUser(data: CreateUserDTO): Promise<User> {
-    const emailExists = await this.findUserService.findUserByEmail(data.email);
+  async handle(data: CreateUserDTO): Promise<ResponseController<User>> {
+    const emailExists = await this.findUserService.execute(data.email);
     if (emailExists) {
       throw new Error('Este e-mail já existe');
     }
-    return this.userService.createUser(data);
+    const newUser = await this.userService.execute(data);
+    return {
+      data: newUser,
+      message: 'Usuário criado com sucesso',
+    };
   }
 }
