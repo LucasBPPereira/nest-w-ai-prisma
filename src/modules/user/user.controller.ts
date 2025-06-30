@@ -51,6 +51,7 @@ export class UserController {
   @Get('')
   public async getAllUsers(): Promise<ResponseController<User[] | []>> {
     const users = await this.getAllUsersUC.handle();
+    console.log('a requisição veio');
     return users;
   }
 

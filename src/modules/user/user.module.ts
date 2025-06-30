@@ -1,5 +1,4 @@
 import { Module, Provider } from '@nestjs/common';
-import { UserService } from './app/services/user.service';
 import { DatabaseModule } from 'src/config/database/database.module';
 import { CreateUserService } from './app/services/create-user.service';
 import { UserController } from './user.controller';
@@ -62,7 +61,6 @@ const deleteUserUseCase: Provider = {
 @Module({
   imports: [DatabaseModule, AiModule],
   providers: [
-    UserService,
     createUserService,
     createUserUseCase,
     findUserByEmailService,
