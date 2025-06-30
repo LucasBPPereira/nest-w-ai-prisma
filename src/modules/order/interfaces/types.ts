@@ -1,6 +1,4 @@
-import { TInjectServiceUseCaseDep } from 'src/types/inject-service-usecase-dep.type';
-
-export const ORDERTYPES: TInjectServiceUseCaseDep = {
+export const ORDERTYPES = {
   services: {
     CreateOrderService: 'CreateOrderService',
   },
