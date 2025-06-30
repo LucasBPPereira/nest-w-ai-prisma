@@ -4,7 +4,6 @@ import { AppService } from './app.service';
 import { DatabaseModule } from './config/database/database.module';
 import { AiModule } from './config/ai/ai.module';
 import { ConfigModule } from '@nestjs/config';
-import { UserModule } from './modules/user/user.module';
 import { CoreModule } from './modules/core.module';
 
 @Module({
@@ -14,7 +13,6 @@ import { CoreModule } from './modules/core.module';
     CoreModule,
     AiModule,
     ConfigModule.forRoot({ isGlobal: true }),
-    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService],
