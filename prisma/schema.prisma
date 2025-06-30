@@ -14,11 +14,70 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  email     String   @unique
-  name      String
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  id              String            @id @default(uuid())
+  email           String            @unique
+  password        String
+  name            String
+  createdAt       DateTime          @default(now()) @map("created_at")
+  updatedAt       DateTime          @updatedAt @map("updated_at")
+  orders          Order[]
+  userPreferences UserPreferences[]
 
   @@map("user")
+}
+
+model Book {
+  id              Int         @id @default(autoincrement())
+  title           String
+  author          String
+  description     String?
+  price           Float
+  stockQuantity   Int
+  publicationDate DateTime
+  coverImageUrl   String?
+  categoryId      Int
+  category        Category    @relation(fields: [categoryId], references: [id])
+  OrderItems      OrderItem[]
+}
+
+model Category {
+  id              Int               @id @default(autoincrement())
+  name            String            @unique
+  books           Book[]
+  UserPreferences UserPreferences[]
+}
+
+model Order {
+  id         Int         @id @default(autoincrement())
+  userId     String
+  totalPrice Float
+  status     OrderStatus @default(PENDING)
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  user       User        @relation(fields: [userId], references: [id])
+  orderItems OrderItem[]
+}
+
+model OrderItem {
+  id       Int   @id @default(autoincrement())
+  orderId  Int
+  bookId   Int
+  quantity Int
+  price    Float
+  order    Order @relation(fields: [orderId], references: [id])
+  book     Book  @relation(fields: [bookId], references: [id])
+}
+
+model UserPreferences {
+  id         Int      @id @default(autoincrement())
+  userId     String
+  categoryId Int
+  user       User     @relation(fields: [userId], references: [id])
+  category   Category @relation(fields: [categoryId], references: [id])
+}
+
+enum OrderStatus {
+  PENDING
+  COMPLETED
+  CANCELLED
 }
