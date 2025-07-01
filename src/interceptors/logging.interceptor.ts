@@ -20,7 +20,7 @@ export class LoggingInterceptor implements NestInterceptor {
         return {
           ...data,
           success: true,
-          time: timeSec,
+          time: `${timeSec}ms`,
         };
       }),
     );
