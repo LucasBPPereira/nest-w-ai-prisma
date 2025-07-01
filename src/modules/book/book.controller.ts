@@ -8,6 +8,7 @@ import {
   Post,
   Put,
   Query,
+  UseInterceptors,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
@@ -22,7 +23,9 @@ import { CreateBookUseCase } from './app/useCases/create-book.usecase';
 import { CreateBookDTO } from './dto/create-book.dto';
 import { GetBooksWithAuthorTitleUseCase } from './app/useCases/get-books-w-author-title.usecase';
 import { GetBookByIDUseCase } from './app/useCases/get-book-by-id.usecase';
+import { LoggingInterceptor } from 'src/interceptors/logging.interceptor';
 
+@UseInterceptors(LoggingInterceptor)
 @Controller('book')
 export class BookController {
   constructor(
