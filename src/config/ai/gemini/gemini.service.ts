@@ -43,16 +43,30 @@ export class GeminiService {
 
   async generateText(data: GetAIMessageDTO) {
     try {
-      const { chat, sessionId } = this.getChatSession(data.sessionId);
+      if (data.sessionId === 'none') {
+        const result = await this.model.generateContent(data.prompt);
+        return result.response.text();
+      }
+      // const { chat, sessionId } = this.getChatSession(data.sessionId);
 
-      const result = await chat.sendMessage(data.prompt);
+      // const result = await chat.sendMessage(data.prompt);
 
-      return {
-        result: result.response.text(),
-        sessionId,
-      };
+      // return {
+      //   result: result.response.text(),
+      //   sessionId,
+      // };
     } catch (error) {
       this.logger.error('Error sending message to Gemini API >>', error);
+    }
+  }
+
+  public async generateWithPrompt(prompt: string): Promise<string> {
+    try {
+      const result = await this.model.generateContent(prompt);
+      return result.response.text();
+    } catch (error) {
+      this.logger.error('Error sending message to Gemini API >>', error);
+      return 'Error, ' + error;
     }
   }
 }
