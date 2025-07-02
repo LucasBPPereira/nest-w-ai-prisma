@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ICreateManyUsersUseCase } from '../../interfaces/use-cases';
-import { User } from '../../domain/entity/user.entity';
+import { User } from '../../domain/user.entity';
 import { CreateUserDTO } from '../../dto/create-user.dto';
 import { ResponseController } from '../../interfaces/response-controller';
 import { TYPES } from '../../interfaces/types';

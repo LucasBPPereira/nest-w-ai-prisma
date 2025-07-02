@@ -1,4 +1,4 @@
-import { User } from '../../domain/entity/user.entity';
+import { User } from '../../domain/user.entity';
 
 export interface IFindUserEmailDomainService {
   execute(domain: string): Promise<User[]>;

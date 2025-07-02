@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { TYPES } from '../../interfaces/types';
 import { FindUserEmailSubdomainService } from '../services/find-user-email-subdomain.service';
 import { IFindUserEmailSubdomainUseCase } from '../../interfaces/use-cases';
-import { User } from '../../domain/entity/user.entity';
+import { User } from '../../domain/user.entity';
 import { ResponseController } from '../../interfaces/response-controller';
 
 @Injectable()

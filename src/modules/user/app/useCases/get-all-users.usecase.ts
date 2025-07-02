@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { IGetAllUsersUseCase } from '../../interfaces/use-cases';
-import { User } from '../../domain/entity/user.entity';
+import { User } from '../../domain/user.entity';
 import { GetAllUsersService } from '../services/get-all-users.service';
 import { TYPES } from '../../interfaces/types';
 import { ResponseController } from '../../interfaces/response-controller';

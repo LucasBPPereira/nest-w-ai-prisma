@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { IDeleteUserUseCase } from '../../interfaces/use-cases';
-import { User } from '../../domain/entity/user.entity';
+import { User } from '../../domain/user.entity';
 import { TYPES } from '../../interfaces/types';
 import { DeleteUserService } from '../services/delete-user.service';
 import { FindUserByIDService } from '../services/find-user-by-id.service';

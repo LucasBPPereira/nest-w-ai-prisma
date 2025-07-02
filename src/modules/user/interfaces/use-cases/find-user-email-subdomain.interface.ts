@@ -1,4 +1,4 @@
-import { User } from '../../domain/entity/user.entity';
+import { User } from '../../domain/user.entity';
 import { ResponseController } from '../response-controller';
 
 export interface IFindUserEmailSubdomainUseCase {

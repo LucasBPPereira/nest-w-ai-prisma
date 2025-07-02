@@ -15,7 +15,7 @@ import {
 } from '@nestjs/common';
 import { CreateUserUseCase } from './app/useCases/createUser.usecase';
 import { TYPES } from './interfaces/types';
-import { User } from './domain/entity/user.entity';
+import { User } from './domain/user.entity';
 import { CreateUserDTO } from './dto/create-user.dto';
 import { GetAllUsersUseCase } from './app/useCases/get-all-users.usecase';
 import { UpdateUserDTO } from './dto/update-user.dto';

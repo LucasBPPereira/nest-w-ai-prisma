@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { IFindUserEmailSubAndDomainService } from '../../interfaces/services';
 import { PrismaService } from 'src/config/database/prisma/prisma.service';
-import { User } from '../../domain/entity/user.entity';
+import { User } from '../../domain/user.entity';
 import { Prisma } from '@prisma/client';
 
 @Injectable()

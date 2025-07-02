@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { User } from './domain/entity/user.entity';
+import { User } from './domain/user.entity';
 import { Book } from '../book/domain/book.domain';
 import { sendMail } from 'src/config/email/sendEmail';
 

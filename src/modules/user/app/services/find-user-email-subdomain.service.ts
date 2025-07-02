@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/config/database/prisma/prisma.service';
 import { IFindUserEmailSubdomainService } from '../../interfaces/services';
-import { User } from '../../domain/entity/user.entity';
+import { User } from '../../domain/user.entity';
 
 @Injectable()
 export class FindUserEmailSubdomainService

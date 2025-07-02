@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ICreateManyUsersService } from '../../interfaces/services/create-many-users.interface';
-import { User } from '../../domain/entity/user.entity';
+import { User } from '../../domain/user.entity';
 import { CreateUserDTO } from '../../dto/create-user.dto';
 import { PrismaService } from 'src/config/database/prisma/prisma.service';
 

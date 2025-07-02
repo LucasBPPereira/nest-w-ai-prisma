@@ -1,5 +1,5 @@
 import { PrismaService } from 'src/config/database/prisma/prisma.service';
-import { User } from '../../domain/entity/user.entity';
+import { User } from '../../domain/user.entity';
 import { FindUsersByCreatedTimeDTO } from '../../dto/find-users-by-created-time.dto';
 import { Injectable } from '@nestjs/common';
 

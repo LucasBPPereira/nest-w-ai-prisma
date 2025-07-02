@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ICreateUserUseCase } from '../../interfaces/use-cases';
-import { User } from '../../domain/entity/user.entity';
+import { User } from '../../domain/user.entity';
 import { TYPES } from '../../interfaces/types';
 import { CreateUserService } from '../services/create-user.service';
 import { CreateUserDTO } from '../../dto/create-user.dto';
