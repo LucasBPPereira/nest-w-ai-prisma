@@ -9,7 +9,6 @@ import { CoreModule } from './modules/core.module';
 @Module({
   imports: [
     DatabaseModule,
-    AppModule,
     CoreModule,
     AiModule,
     ConfigModule.forRoot({ isGlobal: true }),

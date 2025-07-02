@@ -12,11 +12,17 @@ import { DeleteCategoryUseCase } from './app/useCases/delete-category.usecase';
 import { GetAllCategoriesUseCase } from './app/useCases/get-all-categories.usecase';
 import { UpdateCategoryUseCase } from './app/useCases/update-category.usecase';
 import { GetCategoryByIDService } from './app/services/get-category-by-id.service';
+import { CreateManyCategoriesService } from './app/services/create-many-categories.service';
+import { CreateManyCategoriesUseCase } from './app/useCases/create-many-categories.usecase';
 
 const services: Provider[] = [
   {
     provide: CATEGORYTYPE.services.CreateCategoryService,
     useClass: CreateCategoryService,
+  },
+  {
+    provide: CATEGORYTYPE.services.CreateManyCategoriesService,
+    useClass: CreateManyCategoriesService,
   },
   {
     provide: CATEGORYTYPE.services.DeleteCategoryService,
@@ -43,6 +49,10 @@ const useCases: Provider[] = [
   {
     provide: CATEGORYTYPE.useCases.CreateCategoryUseCase,
     useClass: CreateCategoryUseCase,
+  },
+  {
+    provide: CATEGORYTYPE.useCases.CreateManyCategoriesUseCase,
+    useClass: CreateManyCategoriesUseCase,
   },
   {
     provide: CATEGORYTYPE.useCases.DeleteCategoryUseCase,

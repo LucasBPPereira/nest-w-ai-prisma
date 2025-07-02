@@ -13,6 +13,10 @@ import { UpdateUserUseCase } from './app/useCases/update-user.usecase';
 import { FindUserByIDService } from './app/services/find-user-by-id.service';
 import { DeleteUserService } from './app/services/delete-user.service';
 import { DeleteUserUseCase } from './app/useCases/delete-user.usecase';
+import { NotificationService } from './notification.service';
+import { BookModule } from '../book/book.module';
+import { GetPurchaseHistoryOrder } from './app/services/get-purchase-history.service';
+import { UserPreferencesService } from './user-preferences.service';
 
 const createUserService: Provider = {
   provide: TYPES.services.CreateUserService,
@@ -59,8 +63,9 @@ const deleteUserUseCase: Provider = {
 };
 
 @Module({
-  imports: [DatabaseModule, AiModule],
+  imports: [DatabaseModule, AiModule, BookModule],
   providers: [
+    NotificationService,
     createUserService,
     createUserUseCase,
     findUserByEmailService,
@@ -71,7 +76,10 @@ const deleteUserUseCase: Provider = {
     updateUserUseCase,
     deleteUserService,
     deleteUserUseCase,
+    GetPurchaseHistoryOrder,
+    UserPreferencesService,
   ],
   controllers: [UserController],
+  exports: [createUserService, findUserByEmailService, findUserByIDService],
 })
 export class UserModule {}

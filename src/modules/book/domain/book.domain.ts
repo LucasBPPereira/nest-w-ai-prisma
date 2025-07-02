@@ -1,5 +1,8 @@
 import { Book as PrismaBook } from '@prisma/client';
-export class Book implements PrismaBook {
+// import { Category } from 'src/modules/category/domain/category';
+// import { OrderItem } from 'src/modules/order/domain/orderItem.domain';
+
+export interface Book extends PrismaBook {
   id: number;
   title: string;
   author: string;
@@ -9,4 +12,6 @@ export class Book implements PrismaBook {
   publicationDate: Date;
   coverImageUrl: string | null;
   categoryId: number;
+  // category: Category;
+  // orderItems: OrderItem[];
 }

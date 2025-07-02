@@ -24,6 +24,7 @@ import { UpdateUserUseCase } from './app/useCases/update-user.usecase';
 import { LoggingInterceptor } from 'src/interceptors/logging.interceptor';
 import { DeleteUserUseCase } from './app/useCases/delete-user.usecase';
 import { ResponseController } from './interfaces/response-controller';
+import { GetPurchaseHistoryOrder } from './app/services/get-purchase-history.service';
 
 @UseInterceptors(LoggingInterceptor)
 @Controller('user')
@@ -37,6 +38,7 @@ export class UserController {
     private updateUserUC: UpdateUserUseCase,
     @Inject(TYPES.useCases.DeleteUserUseCase)
     private deleteUserUC: DeleteUserUseCase,
+    private getPurchaseHistoryOrder: GetPurchaseHistoryOrder,
   ) {}
 
   @Post('')
@@ -53,6 +55,12 @@ export class UserController {
     const users = await this.getAllUsersUC.handle();
     console.log('a requisição veio');
     return users;
+  }
+
+  @Get(':id/orders')
+  public async getPurchasehistory(@Param('id') id: string) {
+    const userOrders = await this.getPurchaseHistoryOrder.execute(id);
+    return userOrders;
   }
 
   @Put(':id')

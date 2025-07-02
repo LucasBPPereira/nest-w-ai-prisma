@@ -18,6 +18,11 @@ import { GetBookByIDService } from './app/services/get-book-by-id.service';
 import { GetBookByTitleService } from './app/services/get-book-by-title.service';
 import { GetBooksWithAuthorAndTitleService } from './app/services/get-books-w-author-and-title.service';
 import { UpdateBookService } from './app/services/update-book.service';
+import { ReviewService } from './review.service';
+import { AiModule } from 'src/config/ai/ai.module';
+import { CATEGORYTYPE } from '../category/interfaces/type';
+import { GetAllCategoriesUseCase } from '../category/app/useCases/get-all-categories.usecase';
+import { GetAllCategoriesService } from '../category/app/services/get-all-categories.service';
 const useCases: Provider[] = [
   {
     provide: BOOKTYPES.useCases.CreateBookUseCase,
@@ -90,7 +95,25 @@ const services: Provider[] = [
 
 @Module({
   controllers: [BookController],
-  imports: [DatabaseModule],
-  providers: [...useCases, ...services],
+  imports: [DatabaseModule, AiModule],
+  providers: [
+    ...useCases,
+    ...services,
+    ReviewService,
+    {
+      provide: CATEGORYTYPE.useCases.GetAllCategoriesUseCase,
+      useClass: GetAllCategoriesUseCase,
+    },
+    {
+      provide: CATEGORYTYPE.services.GetAllCategoriesService,
+      useClass: GetAllCategoriesService,
+    },
+  ],
+  exports: [
+    {
+      provide: BOOKTYPES.services.GetBookByIDService,
+      useClass: GetBookByIDService,
+    },
+  ],
 })
 export class BookModule {}

@@ -10,7 +10,7 @@ export class GetBookByIDService implements IGetBookByIDService {
   public async execute(id: number): Promise<Book | null> {
     const book = await this.prisma.book.findUnique({
       where: {
-        id,
+        id: Number(id),
       },
     });
     return book;

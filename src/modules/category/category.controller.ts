@@ -20,6 +20,7 @@ import { GetAllCategoriesUseCase } from './app/useCases/get-all-categories.useca
 import { UpdateCategoryUseCase } from './app/useCases/update-category.usecase';
 import { CreateCategoryDTO } from './dto/create-category.dto';
 import { UpdateCategoryDTO } from './dto/update-category.dto';
+import { CreateManyCategoriesUseCase } from './app/useCases/create-many-categories.usecase';
 
 @UseInterceptors(LoggingInterceptor)
 @Controller('category')
@@ -27,6 +28,8 @@ export class CategoryController {
   constructor(
     @Inject(CATEGORYTYPE.useCases.CreateCategoryUseCase)
     private createCategoryUC: CreateCategoryUseCase,
+    @Inject(CATEGORYTYPE.useCases.CreateManyCategoriesUseCase)
+    private createManyCategUC: CreateManyCategoriesUseCase,
     @Inject(CATEGORYTYPE.useCases.DeleteCategoryUseCase)
     private deleteCategoryUC: DeleteCategoryUseCase,
     @Inject(CATEGORYTYPE.useCases.GetAllCategoriesUseCase)
@@ -56,6 +59,15 @@ export class CategoryController {
     return {
       data: newCategory,
       message: 'Categoria criada com sucesso!',
+    };
+  }
+  @Post('many')
+  @UsePipes(new ValidationPipe({ transform: true }))
+  public async createManyCategories(@Body() categoryData: CreateCategoryDTO[]) {
+    const newCategories = await this.createManyCategUC.handle(categoryData);
+    return {
+      data: newCategories,
+      message: 'Categorias criadas com sucesso!',
     };
   }
 

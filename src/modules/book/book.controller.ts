@@ -24,6 +24,12 @@ import { CreateBookDTO } from './dto/create-book.dto';
 import { GetBooksWithAuthorTitleUseCase } from './app/useCases/get-books-w-author-title.usecase';
 import { GetBookByIDUseCase } from './app/useCases/get-book-by-id.usecase';
 import { LoggingInterceptor } from 'src/interceptors/logging.interceptor';
+import { CreateReviewDTO } from './dto/create-review.dto';
+import { ReviewService } from './review.service';
+import { CATEGORYTYPE } from '../category/interfaces/type';
+import { GetAllCategoriesUseCase } from '../category/app/useCases/get-all-categories.usecase';
+import { AiService } from 'src/config/ai/ai.service';
+import { Category } from '../category/domain/category';
 
 @UseInterceptors(LoggingInterceptor)
 @Controller('book')
@@ -43,6 +49,10 @@ export class BookController {
     private createManyBooksUC: CreateManyBooksUseCase,
     @Inject(BOOKTYPES.useCases.CreateBookUseCase)
     private createBookUC: CreateBookUseCase,
+    private reviewService: ReviewService,
+    private aiService: AiService,
+    @Inject(CATEGORYTYPE.useCases.GetAllCategoriesUseCase)
+    private getAllCategoriesUC: GetAllCategoriesUseCase,
   ) {}
   @Post('')
   @UsePipes(new ValidationPipe({ transform: true }))
@@ -61,6 +71,17 @@ export class BookController {
     return {
       data: newsBooks,
       message: 'Os livros foram criados com sucesso.',
+    };
+  }
+
+  @Post('review')
+  @UsePipes(new ValidationPipe({ transform: true }))
+  public async createReviewBook(@Body() reviewData: CreateReviewDTO) {
+    console.log(reviewData);
+    const review = await this.reviewService.createReview(reviewData);
+    return {
+      data: review,
+      message: 'Resenha criada.',
     };
   }
 
@@ -85,6 +106,25 @@ export class BookController {
     return {
       data: books,
       message: 'Estes foram os livros retornados.',
+    };
+  }
+
+  @Get('suggest-categories')
+  @UsePipes(new ValidationPipe({ transform: true }))
+  public async getSuggestCategoryForBook(
+    @Query('title') title: string,
+    @Query('description') description: string,
+  ) {
+    const categ = await this.getAllCategoriesUC.handle();
+    const categFormatted = categ.map((cat: Category) => cat.name);
+    const iaResponse = await this.aiService.suggestCategoriesForBook(
+      title,
+      categFormatted,
+      description,
+    );
+    return {
+      ai: iaResponse,
+      data: categFormatted,
     };
   }
 
