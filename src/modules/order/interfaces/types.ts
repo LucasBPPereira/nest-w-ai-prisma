@@ -1,8 +1,8 @@
 export const ORDERTYPES = {
   services: {
-    CreateOrderService: 'CreateOrderService',
+    CreateNewOrderService: 'CreateNewOrderService',
   },
   useCases: {
-    CreateOrderUseCase: 'CreateOrderUseCase',
+    CreateNewOrderUseCase: 'CreateNewOrderUseCase',
   },
 };
