@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Inject,
   Injectable,
+  Logger,
   UnauthorizedException,
 } from '@nestjs/common';
 import { AuthSignInDTO } from './dto/auth-sign-in.dto';
@@ -13,19 +14,25 @@ import { CreateUserService } from '../user/app/services/create-user.service';
 import { JwtService } from '@nestjs/jwt';
 import { NotificationService } from '../user/notification.service';
 import { AiService } from 'src/config/ai/ai.service';
-
+import { AuthTokenPayload } from './interfaces/auth-token-payload.interface';
+import { PrismaService } from 'src/config/database/prisma/prisma.service';
+import { FindUserByIDService } from '../user/app/services/find-user-by-id.service';
 @Injectable()
 export class AuthService {
+  private readonly logger = new Logger(AuthService.name);
   constructor(
     @Inject(TYPES.services.FindUserByEmailService)
-    private findUseByEmailS: FindUserByEmailService,
+    private readonly findUseByEmailS: FindUserByEmailService,
     @Inject(TYPES.services.CreateUserService)
-    private createUserS: CreateUserService,
-    private jwtService: JwtService,
-    private notificationS: NotificationService,
-    private iaService: AiService,
+    private readonly createUserS: CreateUserService,
+    @Inject(TYPES.services.FindUserByIDService)
+    private readonly findUserByIDService: FindUserByIDService,
+    private readonly jwtService: JwtService,
+    private readonly notificationService: NotificationService,
+    private readonly aiService: AiService,
+    private readonly prisma: PrismaService,
   ) {}
-  public async signIn(data: AuthSignInDTO): Promise<any> {
+  public async signIn(data: AuthSignInDTO): Promise<AuthTokenPayload> {
     const { email, password } = data;
     const emailInUse = await this.findUseByEmailS.execute(email);
 
@@ -40,7 +47,7 @@ export class AuthService {
 
     return await this.generateUserTokens(emailInUse.id);
   }
-  public async signUp(data: AuthSignUpDTO): Promise<any> {
+  public async signUp(data: AuthSignUpDTO): Promise<AuthTokenPayload> {
     const { confirmPassword, email, password } = data;
 
     const emailInUse = await this.findUseByEmailS.execute(email);
@@ -58,18 +65,83 @@ export class AuthService {
       ...data,
       password: hashedPassword,
     });
-    const iaText = await this.iaService.noficationNewUser(data.name);
-    await this.notificationS.sendWelcomeEmail(newUser, iaText);
-  }
+    let welcomeMessage: string | null = null;
+    try {
+      welcomeMessage = await this.aiService.noficationNewUser(data.name);
+      await this.notificationService.sendWelcomeEmail(newUser, welcomeMessage);
+    } catch (err) {
+      this.logger.warn('Falha ao gerar ou enviar mensagem da IA', err);
+    }
 
-  async generateUserTokens(userId: string) {
-    const accessToken = await this.jwtService.signAsync(
-      { userId },
-      { expiresIn: '1h' },
+    const { accessToken, refreshToken } = await this.generateUserTokens(
+      newUser.id,
     );
+
+    await this.updateUserToken(newUser.id, refreshToken);
 
     return {
       accessToken,
+      refreshToken,
     };
+  }
+
+  public async logout(userId: string) {
+    await this.prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        refreshTokenHash: null,
+      },
+    });
+  }
+
+  async generateUserTokens(userId: string) {
+    const payload = { userId };
+    const accessToken = await this.jwtService.signAsync(payload, {
+      expiresIn: '30m',
+    });
+
+    const refreshToken = await this.jwtService.signAsync(payload, {
+      expiresIn: '7d',
+      secret: process.env.JWT_REFRESH_SECRET,
+    });
+    return {
+      accessToken,
+      refreshToken,
+    };
+  }
+
+  private async updateUserToken(
+    userId: string,
+    refreshToken: string,
+  ): Promise<void> {
+    const hashedRT = await bcrypt.hash(refreshToken, 10);
+    await this.prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        refreshTokenHash: hashedRT,
+      },
+    });
+  }
+  public async refreshUserToken(userId: string, refreshToken: string) {
+    const user = await this.findUserByIDService.execute(userId);
+    if (!user || !user.refreshTokenHash) {
+      throw new UnauthorizedException();
+    }
+
+    const isValid = await bcrypt.compare(
+      refreshToken,
+      user.refreshTokenHash as string,
+    );
+    if (!isValid) {
+      throw new UnauthorizedException();
+    }
+
+    const tokens = await this.generateUserTokens(user.id);
+    await this.updateUserToken(user.id, tokens.refreshToken);
+    return tokens;
   }
 }

@@ -8,6 +8,10 @@ import { NotificationService } from '../user/notification.service';
 import { AiModule } from 'src/config/ai/ai.module';
 import { AiService } from 'src/config/ai/ai.service';
 import { GeminiService } from 'src/config/ai/gemini/gemini.service';
+import { DatabaseModule } from 'src/config/database/database.module';
+import { PrismaService } from 'src/config/database/prisma/prisma.service';
+import { JwtStrategy } from './strategy/jwt.strategy';
+import { FindUserByIDService } from '../user/app/services/find-user-by-id.service';
 
 @Module({
   imports: [
@@ -20,14 +24,18 @@ import { GeminiService } from 'src/config/ai/gemini/gemini.service';
       },
     }),
     AiModule,
+    DatabaseModule,
   ],
   controllers: [AuthController],
   providers: [
     AuthService,
     JwtAuthGuard,
+    JwtStrategy,
     NotificationService,
     AiService,
     GeminiService,
+    PrismaService,
+    FindUserByIDService,
   ],
   exports: [AuthService, JwtAuthGuard],
 })
