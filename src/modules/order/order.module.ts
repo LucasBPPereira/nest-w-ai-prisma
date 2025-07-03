@@ -6,9 +6,12 @@ import { CreateNewOrderUseCase } from './app/useCases/create-new-order.usecase';
 import { DatabaseModule } from 'src/config/database/database.module';
 import { UserModule } from '../user/user.module';
 import { BookModule } from '../book/book.module';
-import { UpdateOrderStatus } from './app/services/update-order-status.service';
+import { UpdateOrderStatusService } from './app/services/update-order-status.service';
 import { GetAllOrdersService } from './app/services/get-all-orders.service';
 import { GetAllOrdersUseCase } from './app/useCases/get-all-orders.usecase';
+import { GetOrderByIDService } from './app/services/get-order-by-id.service';
+import { UpdateOrderStatusUseCase } from './app/useCases/update-order-status.usecase';
+import { GetOrderByIDUseCase } from './app/useCases/get-order-by-id.usecase';
 
 const services: Provider[] = [
   {
@@ -30,9 +33,12 @@ const useCases: Provider[] = [
   providers: [
     ...services,
     ...useCases,
-    UpdateOrderStatus,
+    UpdateOrderStatusService,
+    UpdateOrderStatusUseCase,
     GetAllOrdersService,
     GetAllOrdersUseCase,
+    GetOrderByIDService,
+    GetOrderByIDUseCase,
   ],
 })
 export class OrderModule {}
