@@ -114,6 +114,10 @@ const services: Provider[] = [
       provide: BOOKTYPES.services.GetBookByIDService,
       useClass: GetBookByIDService,
     },
+    {
+      provide: BOOKTYPES.services.GetBooksWithAuthorAndTitleService,
+      useClass: GetBooksWithAuthorAndTitleService,
+    },
   ],
 })
 export class BookModule {}

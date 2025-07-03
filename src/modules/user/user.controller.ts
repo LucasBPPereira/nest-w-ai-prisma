@@ -25,6 +25,8 @@ import { LoggingInterceptor } from 'src/interceptors/logging.interceptor';
 import { DeleteUserUseCase } from './app/useCases/delete-user.usecase';
 import { ResponseController } from './interfaces/response-controller';
 import { GetPurchaseHistoryOrder } from './app/services/get-purchase-history.service';
+import { UserPreferencesService } from './user-preferences.service';
+import { GetPersonalizedRecommendationsService } from './app/services/get-personalized-recommendations.service';
 
 @UseInterceptors(LoggingInterceptor)
 @Controller('user')
@@ -39,6 +41,8 @@ export class UserController {
     @Inject(TYPES.useCases.DeleteUserUseCase)
     private deleteUserUC: DeleteUserUseCase,
     private getPurchaseHistoryOrder: GetPurchaseHistoryOrder,
+    private userPreferencesS: UserPreferencesService,
+    private getBookRecommendationS: GetPersonalizedRecommendationsService,
   ) {}
 
   @Post('')
@@ -48,6 +52,19 @@ export class UserController {
   ): Promise<ResponseController<User>> {
     const newUser = await this.createUserUC.handle(userData);
     return newUser;
+  }
+
+  @Post(':id/preferences')
+  public async createUserPreference(
+    @Param('id') userId: string,
+    @Body() categories: { categoriesId: number[] },
+  ) {
+    const userPrefereces = await this.userPreferencesS.saveManyUserPreferences(
+      userId,
+      categories,
+    );
+
+    return userPrefereces;
   }
 
   @Get('')
@@ -60,7 +77,17 @@ export class UserController {
   @Get(':id/orders')
   public async getPurchasehistory(@Param('id') id: string) {
     const userOrders = await this.getPurchaseHistoryOrder.execute(id);
-    return userOrders;
+    const userPreferences = await this.userPreferencesS.getUserPreferences(id);
+    return {
+      data: userOrders,
+      preferences: userPreferences,
+    };
+  }
+
+  @Get(':id/bookRecommendation')
+  public async getBookRecommendation(@Param('id') id: string) {
+    const recommendation = await this.getBookRecommendationS.execute(id);
+    return recommendation;
   }
 
   @Put(':id')

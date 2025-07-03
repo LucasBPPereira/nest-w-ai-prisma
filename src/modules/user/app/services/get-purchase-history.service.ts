@@ -12,22 +12,36 @@ export class GetPurchaseHistoryOrder {
       },
       omit: {
         createdAt: true,
+        id: true,
         email: true,
         password: true,
         updatedAt: true,
       },
       include: {
         orders: {
+          omit: {
+            userId: true,
+            updatedAt: true,
+          },
           include: {
             orderItems: {
+              omit: {
+                id: true,
+              },
               include: {
-                book: true,
+                book: {
+                  omit: {
+                    id: true,
+                    coverImageUrl: true,
+                    reviewId: true,
+                  },
+                },
               },
             },
           },
         },
       },
     });
-    return userOrders;
+    return userOrders[0];
   }
 }

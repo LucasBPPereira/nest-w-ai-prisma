@@ -16,13 +16,47 @@ export class UserPreferencesService {
     return preferences;
   }
 
+  public async saveManyUserPreferences(
+    userId: string,
+    categories: { categoriesId: number[] },
+  ) {
+    const categoriesId = categories.categoriesId;
+    const categ: { userId: string; categoryId: number }[] = [];
+    for (const category of categoriesId) {
+      categ.push({
+        userId: userId,
+        categoryId: category,
+      });
+    }
+    const preferences = await this.prisma.userPreferences.createManyAndReturn({
+      data: categ,
+    });
+    return preferences;
+  }
+
   public async getUserPreferences(userId: string) {
     const preferences = await this.prisma.userPreferences.findMany({
       where: {
         userId,
       },
+      omit: {
+        userId: true,
+        id: true,
+        categoryId: true,
+      },
+      include: {
+        category: {
+          select: {
+            name: true,
+          },
+        },
+      },
     });
 
-    return preferences;
+    const categoriesPreferences: string[] = preferences.map(
+      (pref) => pref.category.name,
+    );
+
+    return categoriesPreferences;
   }
 }

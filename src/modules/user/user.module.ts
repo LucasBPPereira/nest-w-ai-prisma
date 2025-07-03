@@ -17,6 +17,8 @@ import { NotificationService } from './notification.service';
 import { BookModule } from '../book/book.module';
 import { GetPurchaseHistoryOrder } from './app/services/get-purchase-history.service';
 import { UserPreferencesService } from './user-preferences.service';
+import { GetPersonalizedRecommendationsService } from './app/services/get-personalized-recommendations.service';
+import { GetBooksWithAuthorAndTitleService } from '../book/app/services/get-books-w-author-and-title.service';
 
 const createUserService: Provider = {
   provide: TYPES.services.CreateUserService,
@@ -78,8 +80,16 @@ const deleteUserUseCase: Provider = {
     deleteUserUseCase,
     GetPurchaseHistoryOrder,
     UserPreferencesService,
+    GetPersonalizedRecommendationsService,
+    GetBooksWithAuthorAndTitleService,
   ],
   controllers: [UserController],
-  exports: [createUserService, findUserByEmailService, findUserByIDService],
+  exports: [
+    createUserService,
+    findUserByEmailService,
+    findUserByIDService,
+    GetPurchaseHistoryOrder,
+    UserPreferencesService,
+  ],
 })
 export class UserModule {}

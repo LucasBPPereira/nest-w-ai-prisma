@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { GeminiService } from './gemini/gemini.service';
+import { IUserOrders } from './interfaces/get-personalized-recommendations.interface';
 
 @Injectable()
 export class AiService {
@@ -42,8 +43,54 @@ Importante: Não é necessário seguir o exemplo exatamente. Use-o apenas como r
     categ: string[],
     description?: string,
   ): Promise<string> {
-    const prompt = `Dada a descrição do livro '${title} - ${description}', sugira as 3 categorias mais relevantes para ele em formato de lista [Categoria1, Categoria2]. Use as seguintes categorias existentese como referência: '${categ}'. Retorne apenas o array com as categorias, nada mais.`;
+    const prompt = `Dada a descrição do livro '${title} - ${description}', sugira as 3 categorias mais relevantes para ele em formato de lista [Categoria1, Categoria2]. Use as seguintes categorias existentes como referência: [${categ.join(', ')}]. Retorne apenas o array com as categorias, nada mais.`;
     const suggest = await this.geminiService.generateWithPrompt(prompt);
     return suggest;
+  }
+
+  public async getPersonalizedRecommendations(
+    purchaseHistory: IUserOrders,
+    userPreferences: string[],
+  ) {
+    // Formatar o histórico de compras como uma lista simples de títulos e autores
+    const purchaseHistoryFormatted = purchaseHistory.orders
+      .map((order) =>
+        order.orderItems
+          .map((item) => `${item.book.title} - ${item.book.author}`)
+          .join(', '),
+      )
+      .join('; ');
+
+    // Formatar as preferências do usuário em uma string separada por vírgulas
+    const preferencesFormatted = userPreferences.join(', ');
+
+    // Formatar o prompt para passar para a IA
+    const prompt = `O usuário comprou os seguintes livros: ${purchaseHistoryFormatted}.
+Ele demonstrou interesse nas seguintes categorias: [${preferencesFormatted}].
+
+Com base nisso, recomende 5 livros que ele provavelmente vai gostar. 
+Os livros recomendados **não devem** estar na lista de compras.
+
+Retorne **somente** um array JSON no seguinte formato (sem blocos de código, sem explicações, sem prefixos):
+[
+  {"title": "Título do Livro 1", "author": "Autor 1"},
+  {"title": "Título do Livro 2", "author": "Autor 2"},
+  ...
+]
+
+**Importante:** não inclua blocos de código como \`\`\`json ou qualquer outro tipo de marcação. Apenas o array JSON diretamente.`;
+
+    const jsonString = await this.geminiService.generateWithPrompt(prompt);
+    const cleanResponse = jsonString.replace(/^\n+|\n+$/g, '');
+    const validResponse = cleanResponse.replace(/\n/g, '');
+    type BookRecommendation = { title: string; author: string }[];
+    let result: BookRecommendation;
+    try {
+      result = JSON.parse(validResponse) as BookRecommendation;
+    } catch (error) {
+      const err = error as ErrorOptions;
+      throw new Error('Erro ao parsear o JSON da resposta da IA. ', err);
+    }
+    return { result };
   }
 }

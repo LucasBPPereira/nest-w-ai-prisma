@@ -26,10 +26,6 @@ export class GetBooksWithAuthorAndTitleService
       },
     });
 
-    if (books.length === 1) {
-      return books[0];
-    }
-
     return books;
   }
 }
