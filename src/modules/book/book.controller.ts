@@ -8,6 +8,7 @@ import {
   Post,
   Put,
   Query,
+  UseGuards,
   UseInterceptors,
   UsePipes,
   ValidationPipe,
@@ -30,7 +31,9 @@ import { CATEGORYTYPE } from '../category/interfaces/type';
 import { GetAllCategoriesUseCase } from '../category/app/useCases/get-all-categories.usecase';
 import { AiService } from 'src/config/ai/ai.service';
 import { Category } from '../category/domain/category';
+import { JwtAuthGuard } from '../auth/auth.guard';
 
+@UseGuards(JwtAuthGuard)
 @UseInterceptors(LoggingInterceptor)
 @Controller('book')
 export class BookController {
