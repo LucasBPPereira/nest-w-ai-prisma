@@ -9,6 +9,7 @@ import {
   Post,
   Put,
   Res,
+  UseGuards,
   UseInterceptors,
   UsePipes,
   ValidationPipe,
@@ -27,7 +28,9 @@ import { ResponseController } from './interfaces/response-controller';
 import { GetPurchaseHistoryOrder } from './app/services/get-purchase-history.service';
 import { UserPreferencesService } from './user-preferences.service';
 import { GetPersonalizedRecommendationsService } from './app/services/get-personalized-recommendations.service';
+import { JwtAuthGuard } from '../auth/auth.guard';
 
+@UseGuards(JwtAuthGuard)
 @UseInterceptors(LoggingInterceptor)
 @Controller('user')
 export class UserController {
