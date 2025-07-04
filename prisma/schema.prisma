@@ -48,6 +48,7 @@ model Review {
   id        String   @id @default(uuid())
   rating    String
   text      String
+  feeling String
   createdAt DateTime @default(now())
   book      Book     @relation(fields: [bookId], references: [id])
   bookId    Int

@@ -45,7 +45,14 @@ export class AuthService {
       throw new UnauthorizedException('Credenciais inválidas!');
     }
 
-    return await this.generateUserTokens(emailInUse.id);
+    const { accessToken, refreshToken } = await this.generateUserTokens(
+      emailInUse.id,
+    );
+
+    await this.updateUserToken(emailInUse.id, refreshToken);
+    return {
+      accessToken,
+    };
   }
   public async signUp(data: AuthSignUpDTO): Promise<AuthTokenPayload> {
     const { confirmPassword, email, password } = data;
@@ -132,10 +139,7 @@ export class AuthService {
       throw new UnauthorizedException();
     }
 
-    const isValid = await bcrypt.compare(
-      refreshToken,
-      user.refreshTokenHash as string,
-    );
+    const isValid = await bcrypt.compare(refreshToken, user.refreshTokenHash);
     if (!isValid) {
       throw new UnauthorizedException();
     }
